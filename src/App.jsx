@@ -2,28 +2,28 @@ import { useState, useMemo } from "react";
 import { ArrowUpDown, Copy, Download } from "lucide-react";
 
 const initialData = [
-  {
-    id: 1,
-    name: "Rahim",
-    passport: "A1234567",
-    date: "2026-04-01",
-    agent: "Agent A",
-    med: false,
-    mofa: false,
-    pc: false,
-    finger: false,
-    visa: false,
-    manpower: false,
-    flight: false,
-    cancel: false,
-  },
+  { id: 1, name: "Rahim", passport: "A1234567", date: "2026-04-01", agent: "Agent A", med: true, mofa: false, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 2, name: "Karim", passport: "B7654321", date: "2026-03-15", agent: "Agent B", med: true, mofa: true, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 3, name: "Hasan", passport: "C1122334", date: "2026-02-20", agent: "Agent A", med: true, mofa: true, pc: true, finger: true, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 4, name: "Jamal", passport: "D9988776", date: "2026-01-10", agent: "Agent C", med: true, mofa: true, pc: true, finger: true, visa: true, manpower: false, flight: false, cancel: false },
+  { id: 5, name: "Kamal", passport: "E5566778", date: "2026-04-02", agent: "Agent B", med: false, mofa: false, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 6, name: "Sohag", passport: "F2233445", date: "2026-03-28", agent: "Agent A", med: true, mofa: true, pc: true, finger: true, visa: true, manpower: true, flight: false, cancel: false },
+  { id: 7, name: "Rana", passport: "G6677889", date: "2026-02-05", agent: "Agent C", med: true, mofa: false, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 8, name: "Babul", passport: "H4455667", date: "2026-01-25", agent: "Agent B", med: true, mofa: true, pc: true, finger: true, visa: true, manpower: true, flight: true, cancel: false },
+  { id: 9, name: "Nayeem", passport: "I7788990", date: "2026-03-01", agent: "Agent A", med: false, mofa: false, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: true },
+  { id: 10, name: "Shanto", passport: "J8899001", date: "2026-02-18", agent: "Agent C", med: true, mofa: true, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 11, name: "Tanvir", passport: "K3344556", date: "2026-04-01", agent: "Agent B", med: true, mofa: true, pc: true, finger: false, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 12, name: "Imran", passport: "L9988223", date: "2026-03-12", agent: "Agent A", med: true, mofa: true, pc: true, finger: true, visa: true, manpower: false, flight: false, cancel: false },
+  { id: 13, name: "Riyad", passport: "M7766554", date: "2026-02-09", agent: "Agent C", med: false, mofa: false, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: false },
+  { id: 14, name: "Arif", passport: "N2211334", date: "2026-01-30", agent: "Agent B", med: true, mofa: true, pc: true, finger: true, visa: true, manpower: true, flight: false, cancel: false },
+  { id: 15, name: "Sakib", passport: "O5544332", date: "2026-04-02", agent: "Agent A", med: false, mofa: false, pc: false, finger: false, visa: false, manpower: false, flight: false, cancel: false }
 ];
 
 const statusFields = ["med","mofa","pc","finger","visa","manpower","flight"];
 
 export default function App() {
   const [data, setData] = useState(initialData);
-  const [agents, setAgents] = useState(["Agent A"]);
+  const [agents, setAgents] = useState(["Agent A","Agent B","Agent C"]);
 
   const [form, setForm] = useState({ name: "", passport: "", date: "", agent: "" });
   const [editingId, setEditingId] = useState(null);
@@ -40,7 +40,6 @@ export default function App() {
   const [sortKey, setSortKey] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
 
-  // pagination
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
@@ -148,13 +147,12 @@ export default function App() {
     return result;
   }, [data, search, filterAgent, filterStage, filterMonth, sortKey, sortAsc]);
 
-  // pagination logic
   const totalPages = Math.ceil(filteredData.length / pageSize);
   const paginatedData = filteredData.slice((page - 1) * pageSize, page * pageSize);
 
   return (
-    <div className="p-4 md:p-6 bg-gray-100 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 bg-gray-100 min-h-screen flex flex-col">
+      <div className="max-w-7xl mx-auto w-full flex flex-col flex-1">
 
         {/* MINI DASHBOARD */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -164,8 +162,8 @@ export default function App() {
           <MiniCard title="Cancel" value={stats.cancel} />
         </div>
 
-        {/* FILTER + SEARCH + BUTTONS */}
-        <div className="bg-white p-3 rounded-2xl shadow mb-4 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+        {/* FILTER */}
+        <div className="bg-white p-3 rounded-2xl shadow mb-4 flex flex-col md:flex-row gap-3 md:justify-between">
           <div className="flex flex-wrap gap-2 items-center">
             <select className="border p-2 rounded" value={filterStage} onChange={e=>setFilterStage(e.target.value)}>
               <option value="">Stage</option>
@@ -189,63 +187,64 @@ export default function App() {
           </div>
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white rounded-2xl shadow overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-200">
-              <tr>
-                {[{key:"id",label:"SL"},{key:"name",label:"Name"},{key:"passport",label:"Passport"},{key:"date",label:"Date"},{key:"agent",label:"Agent"}].map(col=>(
-                  <th key={col.key} onClick={()=>handleSort(col.key)} className="p-3 cursor-pointer">
-                    <div className="flex items-center gap-1">{col.label}<ArrowUpDown size={14}/></div>
-                  </th>
-                ))}
-                {statusFields.map(s=> <th key={s} className="p-3">{s}</th>)}
-                <th className="p-3">Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {paginatedData.map((item,index)=>(
-                <tr key={item.id} className="border-t">
-                  <td className="p-3">{(page-1)*pageSize + index + 1}</td>
-                  <td className="p-3">{item.name}</td>
-                  <td className="p-3 flex items-center gap-2">{item.passport}<Copy size={14} className="cursor-pointer" onClick={()=>copyPassport(item.passport)} /></td>
-                  <td className="p-3">{item.date}</td>
-                  <td className="p-3">{item.agent}</td>
-
-                  {statusFields.map(field=> (
-                    <td key={field} onClick={()=>toggleStatus(item.id,field)} className="p-3 text-center cursor-pointer">
-                      {item[field] ? "✔" : "✖"}
-                    </td>
+        {/* TABLE CONTAINER FIXED */}
+        <div className="bg-white rounded-2xl shadow flex-1 overflow-hidden">
+          <div className="h-full overflow-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-gray-200 sticky top-0 z-10">
+                <tr>
+                  {[{key:"id",label:"SL"},{key:"name",label:"Name"},{key:"passport",label:"Passport"},{key:"date",label:"Date"},{key:"agent",label:"Agent"}].map(col=>(
+                    <th key={col.key} onClick={()=>handleSort(col.key)} className="p-3 cursor-pointer">
+                      <div className="flex items-center gap-1">{col.label}<ArrowUpDown size={14}/></div>
+                    </th>
                   ))}
-
-                  <td className="p-3 space-x-2">
-                    <button onClick={()=>handleEdit(item)} className="bg-yellow-400 px-2 py-1 rounded">Edit</button>
-                    <button onClick={()=>downloadRow(item)} className="bg-gray-300 px-2 py-1 rounded"><Download size={14}/></button>
-                  </td>
+                  {statusFields.map(s=> <th key={s} className="p-3">{s}</th>)}
+                  <th className="p-3">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {paginatedData.map((item,index)=>(
+                  <tr key={item.id} className="border-t">
+                    <td className="p-3">{(page-1)*pageSize + index + 1}</td>
+                    <td className="p-3">{item.name}</td>
+                    <td className="p-3 flex items-center gap-2">{item.passport}<Copy size={14} className="cursor-pointer" onClick={()=>copyPassport(item.passport)} /></td>
+                    <td className="p-3">{item.date}</td>
+                    <td className="p-3">{item.agent}</td>
+
+                    {statusFields.map(field=> (
+                      <td key={field} onClick={()=>toggleStatus(item.id,field)} className="p-3 text-center cursor-pointer">
+                        {item[field] ? "✔" : "✖"}
+                      </td>
+                    ))}
+
+                    <td className="p-3 space-x-2">
+                      <button onClick={()=>handleEdit(item)} className="bg-yellow-400 px-2 py-1 rounded">Edit</button>
+                      <button onClick={()=>downloadRow(item)} className="bg-gray-300 px-2 py-1 rounded"><Download size={14}/></button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* PAGINATION */}
-        <div className="flex justify-center items-center gap-2 mt-4">
+        {/* FIXED PAGINATION */}
+        <div className="flex justify-end items-center gap-2 mt-2">
           <button disabled={page===1} onClick={()=>setPage(p=>p-1)} className="px-3 py-1 border rounded">Prev</button>
-          <span className="text-sm">Page {page} / {totalPages || 1}</span>
+          <span className="text-sm">{page}/{totalPages || 1}</span>
           <button disabled={page===totalPages} onClick={()=>setPage(p=>p+1)} className="px-3 py-1 border rounded">Next</button>
         </div>
 
-        {/* CANDIDATE MODAL */}
+        {/* MODALS same as before */}
         {showModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
             <div className="bg-white p-6 rounded-xl w-full max-w-md">
               <h2 className="font-bold mb-3">{editingId?"Edit":"Add"} Candidate</h2>
-              <input className="border p-2 w-full mb-2" name="name" placeholder="Name" value={form.name} onChange={handleChange}/>
-              <input className="border p-2 w-full mb-2" name="passport" placeholder="Passport" value={form.passport} onChange={handleChange}/>
+              <input className="border p-2 w-full mb-2" name="name" value={form.name} onChange={handleChange}/>
+              <input className="border p-2 w-full mb-2" name="passport" value={form.passport} onChange={handleChange}/>
               <input className="border p-2 w-full mb-2" type="date" name="date" value={form.date} onChange={handleChange}/>
               <select className="border p-2 w-full mb-2" name="agent" value={form.agent} onChange={handleChange}>
-                <option value="">Select Agent</option>
                 {agents.map(a=> <option key={a}>{a}</option>)}
               </select>
 
@@ -262,12 +261,11 @@ export default function App() {
           </div>
         )}
 
-        {/* AGENT MODAL */}
         {showAgentModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
             <div className="bg-white p-6 rounded-xl w-full max-w-sm">
               <h2 className="font-bold mb-3">Add Agent</h2>
-              <input className="border p-2 w-full mb-3" placeholder="Agent Name" value={newAgent} onChange={e=>setNewAgent(e.target.value)} />
+              <input className="border p-2 w-full mb-3" value={newAgent} onChange={e=>setNewAgent(e.target.value)} />
               <div className="flex justify-end gap-2">
                 <button onClick={()=>setShowAgentModal(false)} className="border px-3 py-1">Cancel</button>
                 <button onClick={addAgent} className="bg-blue-600 text-white px-3 py-1 rounded">Add</button>
